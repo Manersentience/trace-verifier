@@ -1,0 +1,1 @@
+{ "routes": [{ "path": "/api/trace", "method": "POST" }] }
