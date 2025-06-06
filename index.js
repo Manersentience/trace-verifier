@@ -1,0 +1,38 @@
+const crypto = require('crypto');
+const http = require('http');
+
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || 'your_secret_here';
+
+// const ALLOWED_USER_AGENTS = ['GitHub-Hookshot', 'Notion', 'Wechat'];
+
+function verifySignature(req, body) {
+    const signature = req.headers['x-hub-signature-256'];
+    if (!signature) return false;
+    const hmac = crypto.createHmac('sha256', WEBHOOK_SECRET);
+    const digest = 'sha256=' + hmac.update(body).digest('hex');
+    return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
+}
+
+const server = http.createServer((req, res) => {
+    if (req.method !== 'POST') {
+        res.writeHead(405);
+        return res.end('Method Not Allowed');
+    }
+
+    // Uncomment below to enable User-Agent whitelist
+    // const ua = req.headers['user-agent'] || '';
+    // const sourceAllowed = ALLOWED_USER_AGENTS.some(agent => ua.includes(agent));
+    // if (!sourceAllowed) {
+    //     res.writeHead(403);
+    //     return res.end('Forbidden: Source Not Allowed');
+    // }
+
+    let buffer = '';
+    req.on('data', chunk => {
+        buffer += chunk.toString();
+    });
+
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => {
+    console.log(`webhook listener running on port ${PORT}`);
+});
