@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const PORT = process.env.PORT;
 const SECRET = process.env.WEBHOOK_SECRET;
-const LOG_FILE = '/data/memory_shard.log';
+const LOG_FILE = './memory_shard.log'; // <--- 只允许本地目录，不要写 /data!
 
 if (!PORT || !SECRET) {
   throw new Error('Missing PORT or WEBHOOK_SECRET env variable');
